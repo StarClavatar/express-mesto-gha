@@ -1,5 +1,5 @@
+const { ObjectId } = require('mongoose').Types;
 const User = require('../models/user');
-// const bcrypt = require('bcryptjs');
 
 const {
   ERROR_CODE_NOT_FOUND,
@@ -9,6 +9,7 @@ const {
   ERROR_NEW_USER_PARAMS,
   ERROR_EDIT_USER_PARAMS,
   ERROR_EDIT_AVATAR_PARAMS,
+  ERROR_PARAMS,
   ERROR_SERVER,
 } = require('../appErrors/appErrors');
 
@@ -21,14 +22,24 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  User.findById(req.params.userId, fields)
+  const id = (ObjectId.isValid(req.params.userId) && (new ObjectId(req.params.userId)));
+  if (!id) {
+    res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_PARAMS });
+    return;
+  }
+
+  User.findById(id, fields, { runValidators: true })
     .then((result) => {
       if (!result) {
-        return res.status(ERROR_CODE_NOT_FOUND).send({ message: ERROR_USER_NOT_FOUND });
+        res.status(ERROR_CODE_NOT_FOUND).send({ message: ERROR_USER_NOT_FOUND });
+        return;
       }
-      return res.send({ data: result });
+      res.send({ data: result });
     })
-    .catch(() => res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER }));
+    .catch((err) => {
+      console.log(err);
+      res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER });
+    });
 };
 
 module.exports.createUser = (req, res) => {
@@ -56,7 +67,7 @@ module.exports.updateUser = (req, res) => {
   )
     .then((result) => {
       if (!result) return res.status(ERROR_CODE_NOT_FOUND).send({ message: ERROR_USER_NOT_FOUND });
-      return res.send({ data: result });
+      return res.send({ data: { name, about } });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_EDIT_USER_PARAMS });

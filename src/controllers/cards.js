@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongoose').Types;
 const Card = require('../models/card');
 
 const {
@@ -7,6 +8,7 @@ const {
   ERROR_CARD_NOT_FOUND,
   ERROR_NEW_CARD_PARAMS,
   ERROR_CARD_LIKES_PARAMS,
+  ERROR_PARAMS,
   ERROR_SERVER,
 } = require('../appErrors/appErrors');
 
@@ -35,7 +37,13 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findOneAndDelete({ _id: req.params.cardId })
+  const id = (ObjectId.isValid(req.params.cardId) && (new ObjectId(req.params.cardId)));
+  if (!id) {
+    res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_PARAMS });
+    return;
+  }
+
+  Card.findOneAndDelete({ _id: id })
     .then((result) => {
       if (!result) {
         res.status(ERROR_CODE_NOT_FOUND).send({ message: ERROR_CARD_NOT_FOUND });
@@ -49,8 +57,14 @@ module.exports.deleteCard = (req, res) => {
 };
 
 module.exports.likeCard = (req, res) => {
+  const id = (ObjectId.isValid(req.params.cardId) && (new ObjectId(req.params.cardId)));
+  if (!id) {
+    res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_PARAMS });
+    return;
+  }
+
   Card.findByIdAndUpdate(
-    req.params.cardId,
+    id,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true, fields },
   )
@@ -67,8 +81,14 @@ module.exports.likeCard = (req, res) => {
 };
 
 module.exports.dislikeCard = (req, res) => {
+  const id = (ObjectId.isValid(req.params.cardId) && (new ObjectId(req.params.cardId)));
+  if (!id) {
+    res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_PARAMS });
+    return;
+  }
+
   Card.findByIdAndUpdate(
-    req.params.cardId,
+    id,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true, fields },
   )

@@ -11,6 +11,7 @@ const ERROR_CARD_NOT_FOUND = 'Карточка с указанным _id не н
 const ERROR_NEW_CARD_PARAMS = 'Переданы некорректные данные при создании карточки';
 const ERROR_CARD_LIKES_PARAMS = ' Переданы некорректные данные для постановки/снятии лайка.';
 
+const ERROR_PARAMS = 'Переданы некорректные параметры';
 const ERROR_SERVER = 'Ошибка сервера';
 
 module.exports = {
@@ -24,5 +25,6 @@ module.exports = {
   ERROR_CARD_NOT_FOUND,
   ERROR_NEW_CARD_PARAMS,
   ERROR_CARD_LIKES_PARAMS,
+  ERROR_PARAMS,
   ERROR_SERVER,
 };
