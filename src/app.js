@@ -11,10 +11,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
-//затычка пока нет авторизации
+// затычка пока нет авторизации
 app.use((req, res, next) => {
   req.user = {
-    _id: '6276702a7ec2378ad1e29820', // вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: '627d86ca1b8799051ece9930', // вставьте сюда _id созданного в предыдущем пункте пользователя
   };
   next();
 });
