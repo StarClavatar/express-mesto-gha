@@ -67,7 +67,7 @@ module.exports.updateUser = (req, res) => {
   )
     .then((result) => {
       if (!result) return res.status(ERROR_CODE_NOT_FOUND).send({ message: ERROR_USER_NOT_FOUND });
-      return res.send({ data: { name, about } });
+      return res.send({ data: result });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_EDIT_USER_PARAMS });
