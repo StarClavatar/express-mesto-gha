@@ -15,16 +15,17 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 // затычка пока нет авторизации
 app.use((req, res, next) => {
   req.user = {
-    _id: '627d86ca1b8799051ece9930', // вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: '5d8b8592978f8bd833ca8133', // вставьте сюда _id созданного в предыдущем пункте пользователя
   };
   next();
 });
 
 app.use('/users', require('./routes/users'));
-
 app.use('/cards', require('./routes/cards'));
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use((req, res) => res.status(404).send({ message: 'неправильный запрос' }));
 
 app.listen(PORT, () => {
   // console.log(`Сервер запущен на порту ${PORT}`);
