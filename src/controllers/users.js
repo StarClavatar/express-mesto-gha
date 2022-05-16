@@ -4,6 +4,7 @@ const Helpers = require('../utils/helpers');
 
 const fields = '-__v';
 
+// загрузка всех пользователей из БД
 module.exports.getUsers = (req, res) => {
   User.find({}, fields)
     .then((users) => res.send({ data: users }))
@@ -12,6 +13,7 @@ module.exports.getUsers = (req, res) => {
       .send({ message: AppErrors.ERROR_SERVER }));
 };
 
+// загрузка информации пользователя из БД
 module.exports.getUser = (req, res) => {
   const id = Helpers.getMongoId(req.params.userId);
   if (!id) {

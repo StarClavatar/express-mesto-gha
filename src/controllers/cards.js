@@ -7,6 +7,8 @@ const fields = 'name link owner likes';
 
 module.exports.getCards = (req, res) => {
   Card.find({}, fields).populate('owner', 'name about').populate('likes', 'name about')
+    // в ответе может быть owner: null,
+    // из-за захардкоженного _id пользователя в app.js, согласно заданию 13
     .then((result) => res.send({ data: result }))
     .catch(() => res
       .status(AppErrors.ERROR_CODE_SERVER_ERROR)
