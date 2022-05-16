@@ -3,8 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-// const { PORT = 3000, BASE_PATH } = process.env;
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, BASE_PATH = 'public' } = process.env;
+// const { PORT = 3000 } = process.env;
 const app = express();
 
 app.use(bodyParser.json());
@@ -23,11 +23,12 @@ app.use((req, res, next) => {
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use(express.static(path.join(__dirname, 'public')));
+const fullStaticPath = path.join(__dirname, BASE_PATH);
+app.use(express.static(fullStaticPath));
 
 app.use((req, res) => res.status(404).send({ message: 'неправильный запрос' }));
 
 app.listen(PORT, () => {
-  // console.log(`Сервер запущен на порту ${PORT}`);
-  // console.log(BASE_PATH);
+  console.log(`Сервер запущен на порту ${PORT}`);
+  console.log(`Каталог для статических файлов ${fullStaticPath}`);
 });

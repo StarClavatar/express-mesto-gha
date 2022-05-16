@@ -1,44 +1,38 @@
-const { ObjectId } = require('mongoose').Types;
 const User = require('../models/user');
-
-const {
-  ERROR_CODE_NOT_FOUND,
-  ERROR_CODE_BAD_REQUEST,
-  ERROR_CODE_SERVER_ERROR,
-  ERROR_USER_NOT_FOUND,
-  ERROR_NEW_USER_PARAMS,
-  ERROR_EDIT_USER_PARAMS,
-  ERROR_EDIT_AVATAR_PARAMS,
-  ERROR_PARAMS,
-  ERROR_SERVER,
-} = require('../appErrors/appErrors');
+const AppErrors = require('../appErrors/appErrors');
+const Helpers = require('../utils/helpers');
 
 const fields = '-__v';
 
 module.exports.getUsers = (req, res) => {
   User.find({}, fields)
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER }));
+    .catch(() => res
+      .status(AppErrors.ERROR_CODE_SERVER_ERROR)
+      .send({ message: AppErrors.ERROR_SERVER }));
 };
 
 module.exports.getUser = (req, res) => {
-  const id = (ObjectId.isValid(req.params.userId) && (new ObjectId(req.params.userId)));
+  const id = Helpers.getMongoId(req.params.userId);
   if (!id) {
-    res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_PARAMS });
+    res.status(AppErrors.ERROR_CODE_BAD_REQUEST).send({ message: AppErrors.ERROR_PARAMS });
     return;
   }
 
   User.findById(id, fields, { runValidators: true })
     .then((result) => {
       if (!result) {
-        res.status(ERROR_CODE_NOT_FOUND).send({ message: ERROR_USER_NOT_FOUND });
+        res
+          .status(AppErrors.ERROR_CODE_NOT_FOUND)
+          .send({ message: AppErrors.ERROR_USER_NOT_FOUND });
         return;
       }
       res.send({ data: result });
     })
-    .catch((err) => {
-      console.log(err);
-      res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER });
+    .catch(() => {
+      res
+        .status(AppErrors.ERROR_CODE_SERVER_ERROR)
+        .send({ message: AppErrors.ERROR_SERVER });
     });
 };
 
@@ -53,8 +47,14 @@ module.exports.createUser = (req, res) => {
       });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_NEW_USER_PARAMS });
-      return res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER });
+      if (err.name === 'ValidationError') {
+        return res
+          .status(AppErrors.ERROR_CODE_BAD_REQUEST)
+          .send({ message: AppErrors.ERROR_NEW_USER_PARAMS });
+      }
+      return res
+        .status(AppErrors.ERROR_CODE_SERVER_ERROR)
+        .send({ message: AppErrors.ERROR_SERVER });
     });
 };
 
@@ -66,12 +66,22 @@ module.exports.updateUser = (req, res) => {
     { new: true, runValidators: true, fields },
   )
     .then((result) => {
-      if (!result) return res.status(ERROR_CODE_NOT_FOUND).send({ message: ERROR_USER_NOT_FOUND });
+      if (!result) {
+        return res
+          .status(AppErrors.ERROR_CODE_NOT_FOUND)
+          .send({ message: AppErrors.ERROR_USER_NOT_FOUND });
+      }
       return res.send({ data: result });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_EDIT_USER_PARAMS });
-      return res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER });
+      if (err.name === 'ValidationError') {
+        return res
+          .status(AppErrors.ERROR_CODE_BAD_REQUEST)
+          .send({ message: AppErrors.ERROR_EDIT_USER_PARAMS });
+      }
+      return res
+        .status(AppErrors.ERROR_CODE_SERVER_ERROR)
+        .send({ message: AppErrors.ERROR_SERVER });
     });
 };
 
@@ -83,11 +93,21 @@ module.exports.updateAvatar = (req, res) => {
     { new: true, runValidators: true, fields },
   )
     .then((result) => {
-      if (!result) return res.status(ERROR_CODE_NOT_FOUND).send({ message: ERROR_USER_NOT_FOUND });
+      if (!result) {
+        return res
+          .status(AppErrors.ERROR_CODE_NOT_FOUND)
+          .send({ message: AppErrors.ERROR_USER_NOT_FOUND });
+      }
       return res.send({ data: result });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_EDIT_AVATAR_PARAMS });
-      return res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER });
+      if (err.name === 'ValidationError') {
+        return res
+          .status(AppErrors.ERROR_CODE_BAD_REQUEST)
+          .send({ message: AppErrors.ERROR_EDIT_AVATAR_PARAMS });
+      }
+      return res
+        .status(AppErrors.ERROR_CODE_SERVER_ERROR)
+        .send({ message: AppErrors.ERROR_SERVER });
     });
 };

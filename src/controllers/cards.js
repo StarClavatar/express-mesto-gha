@@ -1,23 +1,16 @@
-const { ObjectId } = require('mongoose').Types;
 const Card = require('../models/card');
 
-const {
-  ERROR_CODE_NOT_FOUND,
-  ERROR_CODE_BAD_REQUEST,
-  ERROR_CODE_SERVER_ERROR,
-  ERROR_CARD_NOT_FOUND,
-  ERROR_NEW_CARD_PARAMS,
-  ERROR_CARD_LIKES_PARAMS,
-  ERROR_PARAMS,
-  ERROR_SERVER,
-} = require('../appErrors/appErrors');
+const Helpers = require('../utils/helpers');
+const AppErrors = require('../appErrors/appErrors');
 
 const fields = 'name link owner likes';
 
 module.exports.getCards = (req, res) => {
   Card.find({}, fields).populate('owner', 'name about').populate('likes', 'name about')
     .then((result) => res.send({ data: result }))
-    .catch(() => res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER }));
+    .catch(() => res
+      .status(AppErrors.ERROR_CODE_SERVER_ERROR)
+      .send({ message: AppErrors.ERROR_SERVER }));
 };
 
 module.exports.createCard = (req, res) => {
@@ -31,35 +24,51 @@ module.exports.createCard = (req, res) => {
       });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_NEW_CARD_PARAMS });
-      return res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER });
+      if (err.name === 'ValidationError') {
+        return res
+          .status(AppErrors.ERROR_CODE_BAD_REQUEST)
+          .send({ message: AppErrors.ERROR_NEW_CARD_PARAMS });
+      }
+      return res
+        .status(AppErrors.ERROR_CODE_SERVER_ERROR)
+        .send({ message: AppErrors.ERROR_SERVER });
     });
 };
 
 module.exports.deleteCard = (req, res) => {
-  const id = (ObjectId.isValid(req.params.cardId) && (new ObjectId(req.params.cardId)));
+  const id = Helpers.getMongoId(req.params.cardId);
   if (!id) {
-    res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_PARAMS });
+    res.status(AppErrors.ERROR_CODE_BAD_REQUEST).send({ message: AppErrors.ERROR_PARAMS });
     return;
   }
 
   Card.findOneAndDelete({ _id: id })
     .then((result) => {
       if (!result) {
-        res.status(ERROR_CODE_NOT_FOUND).send({ message: ERROR_CARD_NOT_FOUND });
+        res
+          .status(AppErrors.ERROR_CODE_NOT_FOUND)
+          .send({ message: AppErrors.ERROR_CARD_NOT_FOUND });
         return;
       }
       Card.find({}, fields).populate('owner', 'name about').populate('likes', 'name about')
-        .then((fres) => res.send({ data: fres }))
-        .catch(() => res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER }));
+        // в ответе может быть owner: null,
+        // из-за захардкоженного _id пользователя в app.js, согласно заданию 13
+        .then((cards) => res.send({ data: cards }))
+        .catch(() => res
+          .status(AppErrors.ERROR_CODE_SERVER_ERROR)
+          .send({ message: AppErrors.ERROR_SERVER }));
     })
-    .catch(() => res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER }));
+    .catch(() => res
+      .status(AppErrors.ERROR_CODE_SERVER_ERROR)
+      .send({ message: AppErrors.ERROR_SERVER }));
 };
 
 module.exports.likeCard = (req, res) => {
-  const id = (ObjectId.isValid(req.params.cardId) && (new ObjectId(req.params.cardId)));
+  const id = Helpers.getMongoId(req.params.cardId);
   if (!id) {
-    res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_PARAMS });
+    res
+      .status(AppErrors.ERROR_CODE_BAD_REQUEST)
+      .send({ message: AppErrors.ERROR_PARAMS });
     return;
   }
 
@@ -70,20 +79,30 @@ module.exports.likeCard = (req, res) => {
   )
     .then((result) => {
       if (!result) {
-        return res.status(ERROR_CODE_NOT_FOUND).send({ message: ERROR_CARD_NOT_FOUND });
+        return res
+          .status(AppErrors.ERROR_CODE_NOT_FOUND)
+          .send({ message: AppErrors.ERROR_CARD_NOT_FOUND });
       }
       return res.send({ data: result });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_CARD_LIKES_PARAMS });
-      return res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER });
+      if (err.name === 'ValidationError') {
+        return res
+          .status(AppErrors.ERROR_CODE_BAD_REQUEST)
+          .send({ message: AppErrors.ERROR_CARD_LIKES_PARAMS });
+      }
+      return res
+        .status(AppErrors.ERROR_CODE_SERVER_ERROR)
+        .send({ message: AppErrors.ERROR_SERVER });
     });
 };
 
 module.exports.dislikeCard = (req, res) => {
-  const id = (ObjectId.isValid(req.params.cardId) && (new ObjectId(req.params.cardId)));
+  const id = Helpers.getMongoId(req.params.cardId);
   if (!id) {
-    res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_PARAMS });
+    res
+      .status(AppErrors.ERROR_CODE_BAD_REQUEST)
+      .send({ message: AppErrors.ERROR_PARAMS });
     return;
   }
 
@@ -94,12 +113,20 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((result) => {
       if (!result) {
-        return res.status(ERROR_CODE_NOT_FOUND).send({ message: ERROR_CARD_NOT_FOUND });
+        return res
+          .status(AppErrors.ERROR_CODE_NOT_FOUND)
+          .send({ message: AppErrors.ERROR_CARD_NOT_FOUND });
       }
       return res.send({ data: result });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(ERROR_CODE_BAD_REQUEST).send({ message: ERROR_CARD_LIKES_PARAMS });
-      return res.status(ERROR_CODE_SERVER_ERROR).send({ message: ERROR_SERVER });
+      if (err.name === 'ValidationError') {
+        return res
+          .status(AppErrors.ERROR_CODE_BAD_REQUEST)
+          .send({ message: AppErrors.ERROR_CARD_LIKES_PARAMS });
+      }
+      return res
+        .status(AppErrors.ERROR_CODE_SERVER_ERROR)
+        .send({ message: AppErrors.ERROR_SERVER });
     });
 };
