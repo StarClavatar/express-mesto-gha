@@ -13,6 +13,7 @@ const {
   validationCreateUser,
   validationLogin,
 } = require('./middlewares/validation');
+const NotFoundError = require('./appErrors/not-found-err');
 
 // читаем переменные окружения из .env файла
 require('dotenv').config();
@@ -26,9 +27,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // подключаемся к БД MongoDB
 mongoose.connect('mongodb://localhost:27017/mestodb');
-
-// обработчики ошибок предварительной валидации
-app.use(errors()); // обработчик ошибок celebrate.
 
 // доступ к авторизации и созданию пользователя
 app.post('/signup', validationCreateUser, createUser);
@@ -46,7 +44,10 @@ const fullStaticPath = path.join(__dirname, BASE_PATH);
 app.use(express.static(fullStaticPath));
 
 // обрабатываем все неизвестные роуты
-app.use((req, res) => res.status(404).send({ message: AppErrors.ERROR_BAD_REQUEST }));
+app.use((req, res, next) => next(new NotFoundError(AppErrors.ERROR_BAD_REQUEST)));
+
+// обработчики ошибок предварительной валидации
+app.use(errors()); // обработчик ошибок celebrate.
 
 // централизованный обработчик ошибок
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars

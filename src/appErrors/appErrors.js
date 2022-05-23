@@ -10,7 +10,10 @@ module.exports = {
   ERROR_PARAMS: 'Переданы некорректные параметры',
   ERROR_EMAIL_ALREDY_EXISTS: 'Указанный email уже занят',
   ERROR_AUTHORIZATION_REQUIRED: 'Необходима авторизация',
+  ERROR_AUTHORIZATION: 'Ошибка авторизации',
+  ERROR_LOGIN: 'Ошибка входа',
   ERROR_LOGIN_PASSWORD: 'Неправильная почта или пароль',
   ERROR_BAD_REQUEST: 'Неправильный запрос',
+  ERROR_DELETE_CARD_NOT_OWNERED: 'Запрещено удалять карточку, владельцем которой вы не являетесь',
   ERROR_SERVER: 'Ошибка сервера',
 };

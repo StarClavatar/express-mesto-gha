@@ -10,6 +10,7 @@ const AppErrors = require('../appErrors/appErrors');
 const BadRequestErr = require('../appErrors/bad-request-error');
 const NotFoundErr = require('../appErrors/not-found-err');
 const NotUniqueEmailErr = require('../appErrors/not-unique-email');
+const AuthError = require('../appErrors/auth-error');
 
 const fields = '-__v';
 
@@ -38,7 +39,7 @@ function getUserById(userId) {
 
 // загрузка информации пользователя из БД
 module.exports.getUser = (req, res, next) => {
-  getUserById(req.params.id)
+  getUserById(req.params._id)
     .then((data) => res.status(200).send(data))
     .catch(next);
 };
@@ -116,7 +117,7 @@ module.exports.updateAvatar = (req, res, next) => {
 };
 
 // обработка логина
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
@@ -128,7 +129,7 @@ module.exports.login = (req, res) => {
       );
       res.status(200).send({ token });
     })
-    .catch((err) => {
-      res.status(401).send({ message: err.message });
+    .catch(() => {
+      next(new AuthError(AppErrors.ERROR_LOGIN));
     });
 };

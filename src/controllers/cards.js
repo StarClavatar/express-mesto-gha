@@ -4,6 +4,7 @@ const Helpers = require('../utils/helpers');
 const AppErrors = require('../appErrors/appErrors');
 const BadRequestErr = require('../appErrors/bad-request-error');
 const NotFoundErr = require('../appErrors/not-found-err');
+const UserRights = require('../appErrors/user-rights');
 
 const fields = 'name link owner likes';
 
@@ -32,26 +33,33 @@ module.exports.createCard = (req, res, next) => {
 };
 
 module.exports.deleteCard = (req, res, next) => {
-  const id = Helpers.getMongoId(req.params.cardId);
+  const id = Helpers.getMongoId(req.params._id);
   if (!id) {
     next(new BadRequestErr(AppErrors.ERROR_PARAMS));
     return;
   }
-  // удаляем только карточку, которой мы владеем
-  Card.findOneAndDelete({ _id: id, owner: req.user._id })
+  // ищем карточку
+  Card.findOne({ _id: id }, 'owner')
     .then((result) => {
-      if (!result) {
-        throw new NotFoundErr(AppErrors.ERROR_CARD_NOT_FOUND);
+      if (!result) throw new NotFoundErr(AppErrors.ERROR_CARD_NOT_FOUND);
+      // выходим с оишбкой, если карточка не принадлежит текущему пользователю
+      if (result.get('owner', String) !== req.user._id) {
+        throw new UserRights(AppErrors.ERROR_DELETE_CARD_NOT_OWNERED);
       }
-      Card.find({}, fields).populate('owner', 'name about').populate('likes', 'name about')
-        .then((cards) => res.send({ data: cards }))
+      // удаляем карточку
+      Card.findOneAndDelete({ _id: id })
+        .then(() => {
+          Card.find({}, fields).populate('owner', 'name about').populate('likes', 'name about')
+            .then((cards) => res.send({ data: cards }))
+            .catch(next);
+        })
         .catch(next);
     })
     .catch(next);
 };
 
 module.exports.likeCard = (req, res, next) => {
-  const id = Helpers.getMongoId(req.params.cardId);
+  const id = Helpers.getMongoId(req.params._id);
   if (!id) { next(new BadRequestErr(AppErrors.ERROR_PARAMS)); return; }
   Card.findByIdAndUpdate(
     id,
@@ -71,7 +79,7 @@ module.exports.likeCard = (req, res, next) => {
 };
 
 module.exports.dislikeCard = (req, res, next) => {
-  const id = Helpers.getMongoId(req.params.cardId);
+  const id = Helpers.getMongoId(req.params._id);
   if (!id) { next(new BadRequestErr(AppErrors.ERROR_PARAMS)); return; }
   Card.findByIdAndUpdate(
     id,
