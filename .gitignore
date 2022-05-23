@@ -11,3 +11,6 @@ node_modules
 
 # vscode settings
 .vscode
+
+# environments
+.env

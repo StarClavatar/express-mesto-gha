@@ -1,7 +1,5 @@
 module.exports = {
-  ERROR_CODE_NOT_FOUND: 404,
-  ERROR_CODE_BAD_REQUEST: 400,
-  ERROR_CODE_SERVER_ERROR: 500,
+  ERROR_ICORRECT_USER_ID: 'Передан некорректный идентификатор пользователя',
   ERROR_USER_NOT_FOUND: 'Пользователь с указанным _id не найден',
   ERROR_NEW_USER_PARAMS: 'Переданы некорректные данные при создании пользователя',
   ERROR_EDIT_USER_PARAMS: 'Переданы некорректные данные при редактировании профиля',
@@ -10,5 +8,9 @@ module.exports = {
   ERROR_NEW_CARD_PARAMS: 'Переданы некорректные данные при создании карточки',
   ERROR_CARD_LIKES_PARAMS: 'Переданы некорректные данные для постановки/снятии лайка.',
   ERROR_PARAMS: 'Переданы некорректные параметры',
+  ERROR_EMAIL_ALREDY_EXISTS: 'Указанный email уже занят',
+  ERROR_AUTHORIZATION_REQUIRED: 'Необходима авторизация',
+  ERROR_LOGIN_PASSWORD: 'Неправильная почта или пароль',
+  ERROR_BAD_REQUEST: 'Неправильный запрос',
   ERROR_SERVER: 'Ошибка сервера',
 };
