@@ -7,6 +7,7 @@ const { errors } = require('celebrate');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const AppErrors = require('./appErrors/appErrors');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 // подключаем валидацию создания пользователя и логина
 const {
@@ -21,12 +22,15 @@ require('dotenv').config();
 const { PORT = 3000, BASE_PATH = 'public' } = process.env;
 const app = express();
 
+// подключаем логгер запросов
+app.use(requestLogger);
+
 // подключаем библиотеки парсинга тела запроса
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // подключаемся к БД MongoDB
-mongoose.connect('mongodb://localhost:27017/mestodb');
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 // доступ к авторизации и созданию пользователя
 app.post('/signup', validationCreateUser, createUser);
@@ -45,6 +49,9 @@ app.use(express.static(fullStaticPath));
 
 // обрабатываем все неизвестные роуты
 app.use((req, res, next) => next(new NotFoundError(AppErrors.ERROR_BAD_REQUEST)));
+
+// подключаем логгер ошибок
+app.use(errorLogger);
 
 // обработчики ошибок предварительной валидации
 app.use(errors()); // обработчик ошибок celebrate.
