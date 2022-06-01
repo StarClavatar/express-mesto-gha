@@ -36,6 +36,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // подключаемся к БД MongoDB
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
+// роут для тестирования падения и восстановления средствами pm2
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 // доступ к авторизации и созданию пользователя
 app.post('/signup', validationCreateUser, createUser);
 app.post('/signin', validationLogin, login);
