@@ -8,6 +8,7 @@ const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const AppErrors = require('./appErrors/appErrors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const cors = require('./middlewares/cors');
 
 // подключаем валидацию создания пользователя и логина
 const {
@@ -24,6 +25,9 @@ const app = express();
 
 // подключаем логгер запросов
 app.use(requestLogger);
+
+// подключаем обработку CORS
+app.use(cors);
 
 // подключаем библиотеки парсинга тела запроса
 app.use(bodyParser.json());

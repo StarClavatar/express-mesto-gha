@@ -1,29 +1,24 @@
 https://github.com/tupokaban/express-mesto-gha
-[![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml) [![Tests](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
+
+[![Tests](https://github.com/tupokaban/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-13-sprint.yml)  [![Tests](https://github.com/tupokaban/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/yandex-praktikum/express-mesto-gha/actions/workflows/tests-14-sprint.yml)
 # Проект Mesto фронтенд + бэкенд
 
-
-
-## Настройка бейджей статуса тестов
-Перед началом работы над проектом рекомендуется исправить бейджи, отражающие статус прохождения тестов.
-Для этого замените разметку бейджей на следующий фрагмент, подставив вместо `${имя_пользователя}` и `${имя_репозитория}` соответствующие значения.
-
-```
-[![Tests for sprint 13](https://github.com/${имя_пользователя}/${имя репозитория}/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/${имя_пользователя}/${имя репозитория}/actions/workflows/tests-13-sprint.yml) 
-
-[![Tests for sprint 14](https://github.com/${имя_пользователя}/${имя репозитория}/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/${имя_пользователя}/${имя репозитория}/actions/workflows/tests-14-sprint.yml)
-```
+## О проекте
+Репозиторий содержит клиентскую и серверную часть проектных работ курса по web-разработке Яндекс-практикума 
 
 
 ## Директории
+- backend - серверная часть проекта на node.js разработанная в рамках 13,14 спринтов
+- frontend - клиентская часть приложения на React
 
-`/routes` — папка с файлами роутера  
-`/controllers` — папка с файлами контроллеров пользователя и карточки   
-`/models` — папка с файлами описания схем пользователя и карточки  
+`backend/routes` — папка с файлами роутера  
+`backend/controllers` — папка с файлами контроллеров пользователя и карточки   
+`backend/models` — папка с файлами описания схем пользователя и карточки  
   
 Остальные директории вспомогательные
 
-## Запуск проекта
+## Запуск проектов
+перейти в папку backend или frontend затем ввести:
 
-`npm run start` — запускает сервер   
+`npm run start` — в папке запускает сервер   
 `npm run dev` — запускает сервер с hot-reload
