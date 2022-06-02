@@ -8,6 +8,8 @@ const AuthError = require('../appErrors/auth-error');
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
+  console.log(authorization);
+
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return next(new AuthError(AppErrors.ERROR_AUTHORIZATION_REQUIRED));
   }
