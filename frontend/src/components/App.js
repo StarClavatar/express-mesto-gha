@@ -123,7 +123,8 @@ function App(props) {
             Auth.checkToken(token)
             .then((res) => {
                 if (res) { 
-                    handleLogin(res.data.email); 
+                    Api.setToken(token);
+                    handleLogin(res.data ? res.data.email : res.email); 
                 }
             })
             .catch(err=>console.log(err))
@@ -149,6 +150,7 @@ function App(props) {
         .then((data) => {
             if (data.token){
                 localStorage.setItem('token',data.token);
+                Api.setToken = data.token;
                 handleLogin(email);
             } else {
                 handleInfoTolltipOpen('Неправильный \n логин или пароль', false)

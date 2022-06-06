@@ -20,7 +20,7 @@ const NotFoundError = require('./appErrors/not-found-err');
 // читаем переменные окружения из .env файла
 require('dotenv').config();
 
-const { PORT = 3000, BASE_PATH = 'public' } = process.env;
+const { PORT = 3001, BASE_PATH = 'public' } = process.env;
 const app = express();
 
 // подключаем логгер запросов
@@ -77,6 +77,11 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
       // проверяем статус и выставляем сообщение в зависимости от него
       message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
     });
+});
+
+// обрабатываем незавершенные запросы
+app.use((req, res) => {
+  if (!res.headersSent) res.send();
 });
 
 // начинаем прослушивание порта

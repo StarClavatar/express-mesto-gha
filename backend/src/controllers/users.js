@@ -17,7 +17,7 @@ const fields = '-__v';
 // загрузка всех пользователей из БД
 module.exports.getUsers = (req, res, next) => {
   User.find({}, fields)
-    .then((users) => res.send({ data: users }))
+    .then((users) => res.send(users))
     .catch(next);
 };
 
@@ -31,7 +31,7 @@ function getUserById(userId) {
     User.findById(id, fields, { runValidators: true })
       .then((result) => {
         if (!result) reject(new NotFoundErr(AppErrors.ERROR_USER_NOT_FOUND));
-        resolve({ data: result });
+        resolve(result);
       })
       .catch((err) => reject(err));
   });
@@ -47,7 +47,9 @@ module.exports.getUser = (req, res, next) => {
 // загрузка информации о текущем пользователе
 module.exports.getMe = (req, res, next) => {
   getUserById(req.user._id)
-    .then((data) => res.status(200).send(data))
+    .then((data) => {
+      res.status(200).send(data);
+    })
     .catch(next);
 };
 
@@ -63,9 +65,7 @@ module.exports.createUser = (req, res, next) => {
       })
         .then((result) => {
           res.send({
-            data: {
-              _id: result._id, name, about, avatar, email,
-            },
+            _id: result._id, name, about, avatar, email,
           });
         })
         .catch((err) => {
@@ -90,7 +90,7 @@ module.exports.updateUser = (req, res, next) => {
   )
     .then((result) => {
       if (!result) throw new NotFoundErr(AppErrors.ERROR_USER_NOT_FOUND);
-      return res.send({ data: result });
+      return res.send(result);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') return next(new BadRequestErr(AppErrors.ERROR_EDIT_USER_PARAMS));
@@ -108,7 +108,7 @@ module.exports.updateAvatar = (req, res, next) => {
   )
     .then((result) => {
       if (!result) throw new NotFoundErr(AppErrors.ERROR_USER_NOT_FOUND);
-      return res.send({ data: result });
+      return res.send(result);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') return next(new BadRequestErr(AppErrors.ERROR_EDIT_AVATAR_PARAMS));
