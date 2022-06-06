@@ -20,7 +20,7 @@ const NotFoundError = require('./appErrors/not-found-err');
 // читаем переменные окружения из .env файла
 require('dotenv').config();
 
-const { PORT = 3001, BASE_PATH = 'public' } = process.env;
+const { PORT = 3000, BASE_PATH = 'public' } = process.env;
 const app = express();
 
 // подключаем логгер запросов
