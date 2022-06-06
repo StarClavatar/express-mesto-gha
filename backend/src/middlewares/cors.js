@@ -3,6 +3,7 @@ const allowedCors = [
   'https://praktikum.tk',
   'http://praktikum.tk',
   'http://clavatar.nomoreparties.sbs',
+  'https://clavatar.nomoreparties.sbs',
   'http://localhost:3000',
 ];
 
