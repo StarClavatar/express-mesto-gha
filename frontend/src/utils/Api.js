@@ -146,7 +146,8 @@ class mestoApi {
 
 const Api = new mestoApi({
     // baseUrl: "https://mesto.nomoreparties.co/v1/cohort-32",
-    baseUrl: "http://localhost:3001",
+    // baseUrl: "http://localhost:3001",
+    baseUrl: "https://api.clavatar.nomoreparties.sbs",
     headers: {
         // Authorization: 'ce5975c2-555f-46c5-8851-9175f75178d9',
         'Content-Type': 'application/json'
