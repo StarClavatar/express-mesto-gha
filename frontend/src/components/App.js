@@ -151,7 +151,7 @@ function App(props) {
             if (data.token){
                 localStorage.setItem('token',data.token);
                 Api.setToken = data.token;
-                handleLogin(email);
+                handleLogin(res.data ? res.data.email : res.email);
             } else {
                 handleInfoTolltipOpen('Неправильный \n логин или пароль', false)
             }
