@@ -150,8 +150,8 @@ function App(props) {
         .then((data) => {
             if (data.token){
                 localStorage.setItem('token',data.token);
-                Api.setToken = data.token;
-                handleLogin(res.data ? res.data.email : res.email);
+                Api.setToken(data.token);
+                handleLogin(email);
             } else {
                 handleInfoTolltipOpen('Неправильный \n логин или пароль', false)
             }
